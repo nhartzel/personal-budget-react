@@ -1,5 +1,22 @@
 
+import React, { useEffect, useState } from 'react';
+import D3Chart from '../D3Chart/D3Chart';
+import MainChart from "../MainChart/MainChart";
+import axios from "axios";
+
 function HomePage() {
+  const [budgetData, setBudgetData] = useState(null);
+
+  useEffect(() => {
+    axios.get('http://localhost:3001/budget')
+      .then(res => {
+        setBudgetData(res.data.myBudget);
+      })
+      .catch(err => {
+        console.error("Error fetching data: ", err);
+      });
+  }, []);
+
   return (
     <main className="center" id="main">
 
@@ -60,16 +77,15 @@ function HomePage() {
     
             <article>
                 <h2>Chart</h2>
-                <p>
-                    <canvas id="myChart" width="400" height="400" aria-label="A pie chart displaying your budget information"></canvas>
-                </p>
+                <MainChart data={budgetData}/>
+            </article>
+
+            <article>
+                <h2>D3 Chart</h2>
+                <D3Chart data={budgetData} />
             </article>
 
         </div>
-
-            <h2>Other Chart</h2>
-            <div id="d3-chart"></div>
-
 
     </main>
   );
